@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 
 const allowlist = ['http://localhost:5000']
 const corsOptionsDelegate = function (req, callback) {
-    const corsOptions;
+    let corsOptions;
     if (allowlist.indexOf(req.header('Origin')) !== -1) {
         corsOptions = { origin: true } // reflect (enable) the requested origin in the CORS response
     } else {

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "A CLI tool for quickly scaffolding a node-express api project.",
   "main": "index.js",
+  "bin": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,5 +15,13 @@
     "inquirer": "^8.1.1",
     "ora": "^5.4.1",
     "shelljs": "^0.8.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IamGideonIdoko/bootstrap-express-api-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/IamGideonIdoko/bootstrap-express-api-app/issues"
+  },
+  "homepage": "https://github.com/IamGideonIdoko/bootstrap-express-api-app#readme"
 }

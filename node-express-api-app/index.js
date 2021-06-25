@@ -37,7 +37,7 @@ const createDirectory = (appName, appDirectory) => {
             spinner.fail();
             console.log(`"${appName}" directory already exists.`.red);
             resolve();
-            process.exit(0);
+            // process.exit(0);
         } else {
             const newDir = shell.mkdir('-p', appDirectory);
             if (newDir) {
@@ -73,7 +73,7 @@ const changeDirectory = appName => {
     })
 }
 
-const initializeNPM = (appName, appDirectory) => {
+const initializeNPM = () => {
     const spinner = ora("Initializing NPM...").start();
 
     return new Promise((resolve, reject) => {
@@ -92,19 +92,19 @@ const initializeNPM = (appName, appDirectory) => {
 
 const installPackages = async () => {
     const dependencies = [
-        // "express",
+        "express",
         "express-validator",
-        // "express-rate-limit",
-        // "bcryptjs",
+        "express-rate-limit",
+        "bcryptjs",
         "cors",
-        // "dotenv",
-        // "jsonwebtoken",
-        // "mongoose"
+        "dotenv",
+        "jsonwebtoken",
+        "mongoose"
     ];
     const devDependencies = ["nodemon"];
 
     await new Promise(resolve => {
-        const spinner = ora("\nInstalling Express and other additional dependencies...").start();
+        const spinner = ora("Installing Express and other additional dependencies...").start();
 
         shell.exec(`npm install --save ${dependencies.join(" ")}`, () => {
             spinner.succeed();
@@ -145,19 +145,21 @@ const updatePackageDotJson = () => {
     }) 
 }
 
-const addTemplates = templateList => {
-    const spinner = ora("\nAdding templates...");
+const addTemplates = async templateList => {
+    const spinner = ora("Adding templates...").start();
 
-    return new Promise(resolve => {
-        templateList.forEach(template => {
-            // outputFiles createa a directory owhen it doesn't exist
-            fse.outputFile(template.path, template.file, err => {
-                if (err) {
-                    return console.log(err);
-                }
+    
+
+    await new Promise(resolve => {
+        try {
+            templateList.forEach(async template => {
+                // outputFiles createa a directory owhen it doesn't exist
+                await fse.outputFile(template.path, template.file);
             });
-        });
-        
+        } catch (e) {
+            console.log(`\nAn Error occured: ${e}`.red)
+            process.exit(0);
+        }
         spinner.succeed();
         resolve();
     })
@@ -169,11 +171,14 @@ exports.create = async (appName, appDirectory) => {
         await changeDirectory(appName);
         await initializeNPM(appName);
         await updatePackageDotJson();
-        await installPackages();
-        await addTemplates();
+        // await installPackages();
+        await addTemplates(templates);
     } catch (e) {
         console.log(`\nAn Error occured: ${e}`.red)
+        return process.exit(0);
     }
+
+    await fse.outputFile("help.txt", "love")
 
     console.log(`\nSuccessfully bootstrapped your new Node/Express API App\n`.green);
     return true;
