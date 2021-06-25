@@ -1,7 +1,8 @@
 module.exports = `const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-//define a new schema for User model
+
+// Define User schema.
 const UserSchema = new Schema({
 	username: {
 		type: String,
@@ -17,9 +18,9 @@ const UserSchema = new Schema({
     }
 })
 
-//create User model
+// Create User model.
 const User = mongoose.model('User', UserSchema);
 
-//export the model
+
 module.exports = User;
 `;

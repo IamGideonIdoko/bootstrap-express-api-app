@@ -1,4 +1,4 @@
-module.exports = `APP_NAME='app_name'
-MONGODB_URI='mongodb://localhost:27017/db_name'
+module.exports = appName => `APP_NAME='${appName}'
+MONGODB_URI='mongodb://localhost:27017/${appName}_db'
 JWT_SECRET='jwt_secret'
-`
+`;

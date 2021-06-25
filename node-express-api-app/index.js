@@ -3,6 +3,9 @@ const shell = require("shelljs");
 const ora = require("ora");
 const fse = require("fs-extra");
 const configKeys = require("./templates/config/keys");
+const controllersAuthController = require("./templates/controllers/authController");
+const controllersBlogPostController = require("./templates/controllers/blogPostController");
+const controllersUserController = require("./templates/controllers/userController");
 const modelBlogPost = require('./templates/models/BlogPost');
 const modelUser = require('./templates/models/User');
 const middlewareAuth = require('./templates/middleware/auth');
@@ -13,19 +16,23 @@ const envFile = require('./templates/env');
 const gitignoreFile = require('./templates/gitignore');
 const vercelConfig = require('./templates/vercel-config');
 const indexJs = require('./templates/index');
+const { stripColors } = require("./templates/config/keys");
 
-const templates = [
+const getTemplates = appName => [
     { path: "config/keys.js", file: configKeys },
-    { path: "models/BlogPosts.js", file: modelBlogPost },
+    { path: "controllers/authController.js", file: controllersAuthController },
+    { path: "controllers/blogPostController.js", file: controllersBlogPostController },
+    { path: "controllers/userController.js", file: controllersUserController },
+    { path: "models/BlogPost.js", file: modelBlogPost },
     { path: "models/User.js", file: modelUser },
     { path: "middleware/auth.js", file: middlewareAuth },
     { path: "routes/api/auth.js", file: routeApiAuth },
     { path: "routes/api/blogposts.js", file: routeApiBlogposts },
     { path: "routes/api/users.js", file: routeApiUsers },
-    { path: ".env", file: envFile },
+    { path: ".env", file: envFile(appName) },
     { path: ".gitignore", file: gitignoreFile },
     { path: "vercel.json", file: vercelConfig },
-    { path: "index.js", file: indexJs },
+    { path: "index.js", file: indexJs(appName) },
 ];
 
 const createDirectory = (appName, appDirectory) => {
@@ -37,7 +44,7 @@ const createDirectory = (appName, appDirectory) => {
             spinner.fail();
             console.log(`"${appName}" directory already exists.`.red);
             resolve();
-            // process.exit(0);
+            process.exit(0);
         } else {
             const newDir = shell.mkdir('-p', appDirectory);
             if (newDir) {
@@ -148,21 +155,17 @@ const updatePackageDotJson = () => {
 const addTemplates = async templateList => {
     const spinner = ora("Adding templates...").start();
 
-    
-
-    await new Promise(resolve => {
-        try {
-            templateList.forEach(async template => {
-                // outputFiles createa a directory owhen it doesn't exist
-                await fse.outputFile(template.path, template.file);
-            });
-        } catch (e) {
-            console.log(`\nAn Error occured: ${e}`.red)
-            process.exit(0);
-        }
-        spinner.succeed();
-        resolve();
-    })
+    try {
+        templateList.forEach(async template => {
+            // outputFiles createa a directory owhen it doesn't exist
+            await fse.outputFile(template.path, template.file);
+        });
+    } catch (e) {
+        console.log(`\nAn Error occured: ${e}`.red)
+        process.exit(0);
+    }
+    await fse.outputFile("info.txt", "love")
+    spinner.succeed();
 }
 
 exports.create = async (appName, appDirectory) => {
@@ -171,15 +174,19 @@ exports.create = async (appName, appDirectory) => {
         await changeDirectory(appName);
         await initializeNPM(appName);
         await updatePackageDotJson();
-        // await installPackages();
-        await addTemplates(templates);
+        await installPackages();
+        await addTemplates(getTemplates(appName));
     } catch (e) {
         console.log(`\nAn Error occured: ${e}`.red)
         return process.exit(0);
     }
 
-    await fse.outputFile("help.txt", "love")
 
     console.log(`\nSuccessfully bootstrapped your new Node/Express API App\n`.green);
+
+    console.log("Spin up the development server".inverse);
+    console.log(`> cd ${appName}`.blue.italic + `\n> npm run server`.blue.italic)
+    console.log("Server will run on http://localhost:5000.".italic.dim)
+    console.log(`\nHappy hacking!\n`.rainbow.bold);
     return true;
 }

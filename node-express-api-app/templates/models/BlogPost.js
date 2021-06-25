@@ -1,7 +1,8 @@
 module.exports = `const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-// Define Blog Post Schema
+
+// Define BlogPost schema.
 const BlogPostSchema = new Schema({
 	title: {
 		type: String,
@@ -18,9 +19,9 @@ const BlogPostSchema = new Schema({
     }
 });
 
-//create BlogPost model
+// Create BlogPost model.
 const BlogPost = mongoose.model('blogpost', BlogPostSchema);
 
-//export the model
+
 module.exports = BlogPost;
 `;

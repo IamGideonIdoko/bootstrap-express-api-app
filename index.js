@@ -4,7 +4,7 @@ const colors = require("colors");
 const app = require("./node-express-api-app");
 
 console.log("\n");
-console.log(colors.white("Boostrap a Node/Express API Application Boilerplate."));
+console.log(colors.bold("Boostrap a Node/Express API Application Boilerplate."));
 console.log(`
 
 █▄  █ █▀▀█ █▀▀▄ █▀▀   █▀▀▀ █ █ █▀▀█ █▀▀█ █▀▀ █▀▀ █▀▀ 
@@ -89,5 +89,6 @@ const runCli = async () => {
 
     return process.exit(0);
 }
+
 
 runCli();
