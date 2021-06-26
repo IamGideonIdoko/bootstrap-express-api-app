@@ -16,24 +16,6 @@ const envFile = require('./templates/env');
 const gitignoreFile = require('./templates/gitignore');
 const vercelConfig = require('./templates/vercel-config');
 const indexJs = require('./templates/index');
-const { stripColors } = require("./templates/config/keys");
-
-const getTemplates = appName => [
-    { path: "config/keys.js", file: configKeys },
-    { path: "controllers/authController.js", file: controllersAuthController },
-    { path: "controllers/blogPostController.js", file: controllersBlogPostController },
-    { path: "controllers/userController.js", file: controllersUserController },
-    { path: "models/BlogPost.js", file: modelBlogPost },
-    { path: "models/User.js", file: modelUser },
-    { path: "middleware/auth.js", file: middlewareAuth },
-    { path: "routes/api/auth.js", file: routeApiAuth },
-    { path: "routes/api/blogposts.js", file: routeApiBlogposts },
-    { path: "routes/api/users.js", file: routeApiUsers },
-    { path: ".env", file: envFile(appName) },
-    { path: ".gitignore", file: gitignoreFile },
-    { path: "vercel.json", file: vercelConfig },
-    { path: "index.js", file: indexJs(appName) },
-];
 
 const createDirectory = (appName, appDirectory) => {
     const spinner = ora(`Creating directory(${appName})...`).start();
@@ -74,7 +56,7 @@ const changeDirectory = appName => {
             resolve()
             process.exit(0);
         }
-
+        console.log(`\nDirectory changed.`.green);
         spinner.succeed();
         resolve();
     })
@@ -89,7 +71,7 @@ const initializeNPM = () => {
             console.log('Error: NPM initilization failed'.red);
             process.exit(0);
         }
-
+        console.log(`\nNPM initlialized.`.green);
         spinner.succeed();
         resolve();
     })
@@ -113,6 +95,7 @@ const installPackages = async () => {
         const spinner = ora("Installing Express and other additional dependencies...").start();
 
         shell.exec(`npm install --save ${dependencies.join(" ")}`, () => {
+            console.log(`\nDependencies installed.`.green);
             spinner.succeed();
             resolve();
         });
@@ -122,6 +105,7 @@ const installPackages = async () => {
         const spinner = ora("Installing additional development dependencies...").start();
 
         shell.exec(`npm install --save-dev ${devDependencies.join(" ")}`, () => {
+            console.log(`\nDevelopment dependencies installed.`.green);
             spinner.succeed();
             resolve();
         })
@@ -129,7 +113,7 @@ const installPackages = async () => {
 }
 
 const updatePackageDotJson = () => {
-    const spinner = ora("Updating package.json scripts...");
+    const spinner = ora("Updating package.json scripts...").start();
 
     return new Promise(resolve => {
         const rawPackage = fse.readFileSync("package.json");
@@ -145,26 +129,33 @@ const updatePackageDotJson = () => {
                 spinner.fail();
                 return console.log(err);
             }
-
+            console.log(`\npackage.json updated.`.green);
             spinner.succeed();
             resolve();
         })
     }) 
 }
 
-const addTemplates = async templateList => {
+const addTemplates = async appName => {
     const spinner = ora("Adding templates...").start();
 
-    try {
-        templateList.forEach(async template => {
-            // outputFiles createa a directory owhen it doesn't exist
-            await fse.outputFile(template.path, template.file);
-        });
-    } catch (e) {
-        console.log(`\nAn Error occured: ${e}`.red)
-        process.exit(0);
-    }
-    await fse.outputFile("info.txt", "love")
+    await fse.outputFile("config/keys.js", configKeys);
+    await fse.outputFile("controllers/authController.js", controllersAuthController);
+    await fse.outputFile("controllers/blogPostController.js", controllersBlogPostController);
+    await fse.outputFile("controllers/userController.js", controllersUserController);
+    await fse.outputFile("models/BlogPost.js", modelBlogPost);
+    await fse.outputFile("models/User.js", modelUser);
+    await fse.outputFile("middleware/auth.js", middlewareAuth);
+    await fse.outputFile("routes/api/auth.js", routeApiAuth);
+    await fse.outputFile("routes/api/blogposts.js", routeApiBlogposts);
+    await fse.outputFile("routes/api/users.js", routeApiUsers);
+    await fse.outputFile(".env", envFile(appName));
+    await fse.outputFile(".gitignore", gitignoreFile);
+    await fse.outputFile("vercel.json", vercelConfig);
+    await fse.outputFile("index.js", indexJs(appName));
+    await fse.outputFile("info.txt", "Check out the bootstrap-express-api-app CLI README here: https://github.com/IamGideonIdoko/bootstrap-express-api-app#readme");
+
+    console.log(`\nTemplates added.`.green);
     spinner.succeed();
 }
 
@@ -175,7 +166,7 @@ exports.create = async (appName, appDirectory) => {
         await initializeNPM(appName);
         await updatePackageDotJson();
         await installPackages();
-        await addTemplates(getTemplates(appName));
+        await addTemplates(appName);
     } catch (e) {
         console.log(`\nAn Error occured: ${e}`.red)
         return process.exit(0);

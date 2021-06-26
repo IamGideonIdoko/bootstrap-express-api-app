@@ -1,5 +1,4 @@
-module.exports = `
-const express = require('express');
+module.exports = `const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth');
 const authController = require('../../controllers/authController');

@@ -6,7 +6,7 @@ Bootstrap Express API App is a CLI tool that understands the need for speed and 
 
 ## Installation
 
-**You'll need to have [Node.js](https://nodejs.org/en/download/) installed on you local development machine.**
+**You'll need to have [Node.js](https://nodejs.org/en/download/) installed on your local development machine.**
 
 Using [npm](http://npmjs.org) (the recommended way):
 
