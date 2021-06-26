@@ -100,7 +100,6 @@ const initializeNPM = () => {
 const installPackages = async () => {
     const dependencies = [
         "express",
-        "express-validator",
         "express-rate-limit",
         "bcryptjs",
         "cors",
@@ -136,6 +135,7 @@ const updatePackageDotJson = () => {
         const rawPackage = fse.readFileSync("package.json");
         const package = JSON.parse(rawPackage);
 
+        package.version = "0.1.0"
         package.scripts.start = "node index.js";
         package.scripts.server = "nodemon index.js";
         package.description = "A Node/Express API Application"
