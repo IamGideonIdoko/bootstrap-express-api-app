@@ -5,8 +5,17 @@
   "main": "index.js",
   "bin": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index"
   },
+  "keywords": [
+    "bootstrap-express-api-app",
+    "express-api",
+    "cli",
+    "boilerplate",
+    "zero-configuration",
+    "node",
+    "express"
+  ],
   "author": "Gideon Idoko (iamgideonidoko@gmail.com)",
   "license": "MIT",
   "dependencies": {
